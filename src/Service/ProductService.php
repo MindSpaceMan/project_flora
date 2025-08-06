@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service\Entities;
+namespace App\Service;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
