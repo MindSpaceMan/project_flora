@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-// src/Entity/OrderItem.php
 namespace App\Entity;
 
 use App\Repository\OrderItemRepository;

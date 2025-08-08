@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-// src/Entity/Review.php
 namespace App\Entity;
 
 use App\Repository\ReviewRepository;

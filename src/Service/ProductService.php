@@ -10,9 +10,6 @@ final readonly class ProductService
 {
     public function __construct(private ProductRepository $repository) {}
 
-    /**
-     * Get product
-     */
     public function getProduct(string $product): Product
     {
         return $this->repository->find($product);

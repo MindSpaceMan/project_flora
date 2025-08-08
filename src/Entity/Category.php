@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-// src/Entity/Category.php
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;

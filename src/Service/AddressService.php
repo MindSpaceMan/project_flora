@@ -12,9 +12,7 @@ final readonly class AddressService
 {
     public function __construct(private AddressRepository $repository) {}
 
-    /**
-     * Get product
-     */
+
     public function getAddress(string $address): Address
     {
         return $this->repository->find($address);

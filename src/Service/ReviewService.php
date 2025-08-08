@@ -5,18 +5,17 @@ namespace App\Service;
 
 use App\Entity\Address;
 use App\Entity\Product;
+use App\Entity\Review;
 use App\Repository\AddressRepository;
 use App\Repository\ProductRepository;
+use App\Repository\ReviewRepository;
 
 final readonly class ReviewService
 {
-    public function __construct(private AddressRepository $repository) {}
+    public function __construct(private ReviewRepository $repository) {}
 
-    /**
-     * Get product
-     */
-    public function getAddress(string $address): Address
+    public function getReview(string $review): Review
     {
-        return $this->repository->find($address);
+        return $this->repository->find($review);
     }
 }
