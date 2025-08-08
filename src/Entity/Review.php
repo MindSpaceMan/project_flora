@@ -22,6 +22,10 @@ class Review
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Product $product;
 
+    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private Customer $customer;
+
     #[ORM\Column(type: 'smallint')]
     private int $rating;
 
@@ -55,6 +59,17 @@ class Review
     public function setProduct(Product $product): self
     {
         $this->product = $product;
+        return $this;
+    }
+
+    public function getCustomer(): Customer
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer(?Customer $customer): self
+    {
+        $this->customer = $customer;
         return $this;
     }
 

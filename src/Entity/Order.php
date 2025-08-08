@@ -23,7 +23,7 @@ class Order
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'orders')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private Customer $customer;
 
     #[ORM\Column(length: 20, options: ['default' => 'new'])]
@@ -51,7 +51,7 @@ class Order
     #[ORM\PreUpdate]
     public function preUpdate(): void
     {
-        // можно обновлять updatedAt, если оно есть
+
     }
 
     public function getId(): ?UuidInterface

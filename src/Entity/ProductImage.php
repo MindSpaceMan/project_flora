@@ -18,7 +18,7 @@ class ProductImage
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private Product $product;
 
     #[ORM\Column(length: 255)]
@@ -59,7 +59,7 @@ class ProductImage
         return $this->product;
     }
 
-    public function setProduct(Product $product): self
+    public function setProduct(?Product $product): self
     {
         $this->product = $product;
         return $this;

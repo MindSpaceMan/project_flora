@@ -19,7 +19,7 @@ class OrderItem
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'items')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private Order $order;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]

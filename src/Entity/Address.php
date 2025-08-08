@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Customer;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 
@@ -18,7 +17,7 @@ class Address
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'addresses')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private Customer $customer;
 
     #[ORM\Column(length: 255, nullable: true)]

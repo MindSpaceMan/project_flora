@@ -21,7 +21,7 @@ class Customer
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private string $email;
 
     #[ORM\Column(length: 50, nullable: true)]
@@ -35,10 +35,17 @@ class Customer
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'customer', cascade: ['persist','remove'])]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'customer', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
         $this->orders    = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?UuidInterface
@@ -122,6 +129,34 @@ class Customer
         if ($this->orders->removeElement($order)) {
             if ($order->getCustomer() === $this) {
                 $order->setCustomer(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setCustomer($this);
+        }
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            // разрываем связь, чтобы orphanRemoval сработал
+            if ($review->getCustomer() === $this) {
+                $review->setCustomer(null);
             }
         }
         return $this;
