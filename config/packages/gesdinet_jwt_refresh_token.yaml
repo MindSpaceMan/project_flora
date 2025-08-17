@@ -1,4 +1,5 @@
 gesdinet_jwt_refresh_token:
     refresh_token_class: App\Entity\RefreshToken
+    user_identity_field: email          # важно: совпадает с тем, как Lexik ищет юзера
+    token_parameter_name: refresh_token
     ttl: 2592000 # 30 дней
-    user_provider: app_user_provider

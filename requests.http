@@ -1,8 +1,5 @@
-@host = 127.0.0.1:8337
-@base = http://{{host}}
-
-### Login (получить JWT + refresh_token)
-POST {{base}}/api/login
+### Login — получить access_token и refresh_token
+POST http://127.0.0.1:8337/api/login
 Accept: application/json
 Content-Type: application/json
 
@@ -12,29 +9,27 @@ Content-Type: application/json
 }
 
 > {%
-    // Сохраняем токены в глобальные переменные HTTP-клиента (JetBrains)
-    try {
-        const data = JSON.parse(response.body);
-        if (data.token) {
-            client.global.set("access_token", data.token);
-            client.log("Saved access_token");
-        }
-        if (data.refresh_token) {
-            client.global.set("refresh_token", data.refresh_token);
-            client.log("Saved refresh_token");
-        }
-    } catch (e) {
-        client.log("Login parse error: " + e);
+    // Безопасный парсинг
+    const raw = response.body;
+    const data = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+
+    if (!data || !data.token) {
+        throw new Error("Ответ логина не содержит token. Тело: " + (typeof raw === 'string' ? raw : JSON.stringify(raw)));
+    }
+
+    client.global.set("access_token", data.token);
+    if (data.refresh_token) {
+        client.global.set("refresh_token", data.refresh_token);
     }
 %}
 
-### Пример запроса к защищённому ресурсу
-GET {{base}}/api/categories
+### Пример запроса с Bearer
+GET http://127.0.0.1:8337/api/categories
 Accept: application/json
 Authorization: Bearer {{access_token}}
 
-### Refresh (обновить access_token по refresh_token)
-POST {{base}}/api/token/refresh
+### Обновить access_token по refresh_token
+POST http://127.0.0.1:8337/api/token/refresh
 Accept: application/json
 Content-Type: application/json
 
@@ -43,19 +38,15 @@ Content-Type: application/json
 }
 
 > {%
-    // Обновляем access_token после рефреша
-    try {
-        const data = JSON.parse(response.body);
-        if (data.token) {
-            client.global.set("access_token", data.token);
-            client.log("Refreshed access_token");
-        }
-    } catch (e) {
-        client.log("Refresh parse error: " + e);
+    const raw = response.body;
+    const data = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+
+    if (!data || !data.token) {
+        throw new Error("Ответ refresh не содержит token. Тело: " + (typeof raw === 'string' ? raw : JSON.stringify(raw)));
     }
+
+    client.global.set("access_token", data.token);
 %}
 
-### Проверка после рефреша
-GET {{base}}/api/categories
-Accept: application/json
-Authorization: Bearer {{access_token}}
+### (опция) Сбросить сохранённые токены
+# > {% client.global.clear("access_token"); client.global.clear("refresh_token"); %}
