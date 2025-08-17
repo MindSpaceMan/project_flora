@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 use Nelmio\ApiDocBundle\Attribute\Model;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-final class CategoriesResponse extends OA\Post
+final class CategoriesResponse extends OA\Get
 {
     public function __construct()
     {
@@ -22,7 +22,7 @@ final class CategoriesResponse extends OA\Post
                     description: 'Категории цветочков',
                     content: new OA\JsonContent(
                         type: 'array',
-                        items: new OA\Items(ref: new Model(type: Category::class))
+                        items: new OA\Items(ref: new Model(type: Category::class, groups: ['category:list']))
                     )
                 ),
                 new OA\Response(response: 401, description: 'Не авторизован'),

@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes\Property;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -15,12 +17,18 @@ class Category
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['category:list'])]
+    #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
     private ?UuidInterface $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['category:list'])]
+    #[Property(example: 'Тюльпаны')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
+    #[Groups(['category:list'])]
+    #[Property(example: 'tyulpany')]
     private ?string $slug = null;
 
     #[ORM\Column]

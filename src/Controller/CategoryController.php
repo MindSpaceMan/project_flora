@@ -30,7 +30,9 @@ final class CategoryController extends AbstractController
             $categories,
             200,
             [],
-            ['json_encode_options' => JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES]
+            ['json_encode_options' => JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+                'groups' => ['category:list']
+            ]
         );
     }
 }
