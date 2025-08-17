@@ -14,7 +14,7 @@ final class CategoriesResponse extends OA\Get
     public function __construct()
     {
         parent::__construct(
-            summary: 'Purchasing product with payment process',
+            summary: 'Категории цветочков',
             tags: ['Категория'],
             responses: [
                 new OA\Response(

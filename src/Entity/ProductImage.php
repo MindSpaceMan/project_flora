@@ -5,8 +5,10 @@ namespace App\Entity;
 
 use App\Repository\ProductImageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes\Property;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductImageRepository::class)]
@@ -17,6 +19,8 @@ class ProductImage
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
+    #[Groups(['product:list'])]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
@@ -27,6 +31,7 @@ class ProductImage
      * Источник хранения: external|local
      */
     #[ORM\Column(length: 20, options: ['default' => 'external'])]
+    #[Groups(['product:list'])]
     private string $storage = 'external';
 
     /**
@@ -34,6 +39,7 @@ class ProductImage
      */
     #[ORM\Column(length: 1024, nullable: true)]
     #[Assert\Url(protocols: ['http', 'https'])]
+    #[Groups(['product:list'])]
     private ?string $url = null;
 
     /**
@@ -41,15 +47,19 @@ class ProductImage
      * например: "products/ballade-dream/main.jpg"
      */
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:list'])]
     private ?string $localPath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:list'])]
     private ?string $alt = null;
 
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[Groups(['product:list'])]
     private int $sortOrder = 0;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[Groups(['product:list'])]
     private bool $isPrimary = false;
 
     #[ORM\Column(nullable: true)]
