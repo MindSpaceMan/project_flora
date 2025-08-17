@@ -1,11 +1,13 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ProductImageRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductImageRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -19,10 +21,27 @@ class ProductImage
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
-    private Product $product;
+    private ?Product $product = null;
 
-    #[ORM\Column(length: 255)]
-    private string $url;
+    /**
+     * Источник хранения: external|local
+     */
+    #[ORM\Column(length: 20, options: ['default' => 'external'])]
+    private string $storage = 'external';
+
+    /**
+     * Внешний URL (если storage = external)
+     */
+    #[ORM\Column(length: 1024, nullable: true)]
+    #[Assert\Url(protocols: ['http', 'https'])]
+    private ?string $url = null;
+
+    /**
+     * Относительный путь для локального файла (если storage = local),
+     * например: "products/ballade-dream/main.jpg"
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $localPath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $alt = null;
@@ -33,10 +52,10 @@ class ProductImage
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isPrimary = false;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
@@ -45,16 +64,61 @@ class ProductImage
     }
 
     /**
-     * @internal
+     * Простая валидация: при external должен быть url; при local — localPath
      */
-    #[ORM\PrePersist]
-    public function onPrePersist(): void
+    #[Assert\Callback]
+    public function validateSource(\Symfony\Component\Validator\Context\ExecutionContextInterface $context): void
     {
-        $now = new \DateTimeImmutable();
-        $this->updatedAt = $now;
+        if ($this->storage === 'external') {
+            if (!$this->url) {
+                $context->buildViolation('Для внешнего изображения поле url обязательно.')
+                    ->atPath('url')
+                    ->addViolation();
+            }
+        } elseif ($this->storage === 'local') {
+            if (!$this->localPath) {
+                $context->buildViolation('Для локального изображения поле localPath обязательно.')
+                    ->atPath('localPath')
+                    ->addViolation();
+            }
+        } else {
+            $context->buildViolation('Недопустимый тип storage. Разрешено: external|local.')
+                ->atPath('storage')
+                ->addViolation();
+        }
     }
 
-    public function getProduct(): Product
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function touchUpdatedAt(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+        if (!$this->createdAt) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
+    /**
+     * Универсальный getter для фронта: отдаёт абсолютный URL для внешнего или
+     * публичный путь для локального (через baseUploads, по умолчанию "/uploads")
+     */
+    public function getPublicUrl(string $baseUploads = '/uploads'): ?string
+    {
+        return match ($this->storage) {
+            'external' => $this->url,
+            'local'    => $this->localPath ? rtrim($baseUploads, '/') . '/' . ltrim($this->localPath, '/') : null,
+            default    => null,
+        };
+    }
+
+    // --- Getters / Setters ---
+
+    public function getId(): ?UuidInterface
+    {
+        return $this->id;
+    }
+
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
@@ -65,14 +129,36 @@ class ProductImage
         return $this;
     }
 
-    public function getUrl(): string
+    public function getStorage(): string
+    {
+        return $this->storage;
+    }
+
+    public function setStorage(string $storage): self
+    {
+        $this->storage = $storage;
+        return $this;
+    }
+
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    public function setUrl(string $url): self
+    public function setUrl(?string $url): self
     {
         $this->url = $url;
+        return $this;
+    }
+
+    public function getLocalPath(): ?string
+    {
+        return $this->localPath;
+    }
+
+    public function setLocalPath(?string $localPath): self
+    {
+        $this->localPath = $localPath;
         return $this;
     }
 
@@ -114,10 +200,9 @@ class ProductImage
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -126,10 +211,9 @@ class ProductImage
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
-
         return $this;
     }
 }

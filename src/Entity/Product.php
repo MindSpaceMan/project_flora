@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes\Property;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -17,6 +19,8 @@ class Product
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['product:list'])]
+    #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
@@ -24,9 +28,12 @@ class Product
     private Category $category;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:list'])]
+    #[Property(example: 'Тюльпан лилиецветный Балладе Дрим')]
     private string $titleRu;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Property(example: 'Ballade Tulip')]
     private ?string $latinName = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
