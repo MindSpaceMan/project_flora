@@ -1,22 +1,61 @@
-### Calculate Price
-POST http://127.0.0.1:8337/calculate-price
+@host = 127.0.0.1:8337
+@base = http://{{host}}
+
+### Login (получить JWT + refresh_token)
+POST {{base}}/api/login
 Accept: application/json
 Content-Type: application/json
 
 {
-  "product": 1,
-  "taxNumber": "DE123456789",
-  "couponCode": "D15"
+  "email": "admin@floramix.ru",
+  "password": "admin123"
 }
 
-### Execute Purchase
-POST http://127.0.0.1:8337/purchase
+> {%
+    // Сохраняем токены в глобальные переменные HTTP-клиента (JetBrains)
+    try {
+        const data = JSON.parse(response.body);
+        if (data.token) {
+            client.global.set("access_token", data.token);
+            client.log("Saved access_token");
+        }
+        if (data.refresh_token) {
+            client.global.set("refresh_token", data.refresh_token);
+            client.log("Saved refresh_token");
+        }
+    } catch (e) {
+        client.log("Login parse error: " + e);
+    }
+%}
+
+### Пример запроса к защищённому ресурсу
+GET {{base}}/api/categories
+Accept: application/json
+Authorization: Bearer {{access_token}}
+
+### Refresh (обновить access_token по refresh_token)
+POST {{base}}/api/token/refresh
 Accept: application/json
 Content-Type: application/json
 
 {
-  "product": 1,
-  "taxNumber": "IT12345678900",
-  "couponCode": "D15",
-  "paymentProcessor": "paypal"
+  "refresh_token": "{{refresh_token}}"
 }
+
+> {%
+    // Обновляем access_token после рефреша
+    try {
+        const data = JSON.parse(response.body);
+        if (data.token) {
+            client.global.set("access_token", data.token);
+            client.log("Refreshed access_token");
+        }
+    } catch (e) {
+        client.log("Refresh parse error: " + e);
+    }
+%}
+
+### Проверка после рефреша
+GET {{base}}/api/categories
+Accept: application/json
+Authorization: Bearer {{access_token}}
