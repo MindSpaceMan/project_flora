@@ -61,7 +61,7 @@ class Category
         return $this->name;
     }
 
-    public function setName(?string $name): static
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -73,7 +73,7 @@ class Category
         return $this->slug;
     }
 
-    public function setSlug(?string $slug): static
+    public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
 
@@ -85,7 +85,7 @@ class Category
         return $this->sortOrder;
     }
 
-    public function setSortOrder(int $sortOrder): static
+    public function setSortOrder(int $sortOrder): self
     {
         $this->sortOrder = $sortOrder;
 
@@ -97,7 +97,7 @@ class Category
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
 
@@ -109,7 +109,7 @@ class Category
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -121,7 +121,7 @@ class Category
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

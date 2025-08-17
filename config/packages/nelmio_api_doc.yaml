@@ -2,7 +2,7 @@ nelmio_api_doc:
     documentation:
         info:
             title: My App
-            description: 'API для расчёта цены и покупки продуктов.'
+            description: 'API для операций с посадочным материалом.'
             version: 1.0.0
     areas: # to filter documented areas
         default:

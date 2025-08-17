@@ -14,8 +14,18 @@ final readonly class CategoryService
 {
     public function __construct(private CategoryRepository $repository) {}
 
-    public function getCategory(string $category): Category
+    /**
+     * @return list<Category>
+     */
+    public function getActiveCategories(): array
     {
-        return $this->repository->find($category);
+        return $this->repository->createQueryBuilder('c')
+            ->select('c.id, c.name, c.slug') // только нужные поля
+            ->andWhere('c.isActive = :active')
+            ->setParameter('active', true)
+            ->addOrderBy('c.sortOrder', 'ASC')
+            ->addOrderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
     }
 }

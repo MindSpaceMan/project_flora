@@ -88,7 +88,7 @@ class Product
         return $this->category;
     }
 
-    public function setCategory(Category $category): static
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
@@ -100,7 +100,7 @@ class Product
         return $this->titleRu;
     }
 
-    public function setTitleRu(string $titleRu): static
+    public function setTitleRu(string $titleRu): self
     {
         $this->titleRu = $titleRu;
 
@@ -112,7 +112,7 @@ class Product
         return $this->latinName;
     }
 
-    public function setLatinName(?string $latinName): static
+    public function setLatinName(?string $latinName): self
     {
         $this->latinName = $latinName;
 
@@ -124,7 +124,7 @@ class Product
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -136,7 +136,7 @@ class Product
         return $this->heightCm;
     }
 
-    public function setHeightCm(?int $heightCm): static
+    public function setHeightCm(?int $heightCm): self
     {
         $this->heightCm = $heightCm;
 
@@ -148,7 +148,7 @@ class Product
         return $this->slug;
     }
 
-    public function setSlug(string $slug): static
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
 
@@ -161,7 +161,7 @@ class Product
         return $this->metaTitle;
     }
 
-    public function setMetaTitle(?string $metaTitle): static
+    public function setMetaTitle(?string $metaTitle): self
     {
         $this->metaTitle = $metaTitle;
 
@@ -173,7 +173,7 @@ class Product
         return $this->metaDescription;
     }
 
-    public function setMetaDescription(?string $metaDescription): static
+    public function setMetaDescription(?string $metaDescription): self
     {
         $this->metaDescription = $metaDescription;
 
@@ -185,7 +185,7 @@ class Product
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -197,7 +197,7 @@ class Product
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
