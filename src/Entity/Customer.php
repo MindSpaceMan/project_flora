@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
@@ -16,36 +17,39 @@ class Customer
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['admin:cart'])]
     private ?UuidInterface $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['admin:cart'])]
     private string $name;
 
-    #[ORM\Column(length: 255, unique: true)]
-    private string $email;
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    #[Groups(['admin:cart'])]
+    private ?string $email = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['admin:cart'])]
     private ?string $phone = null;
 
     /** @var Collection<int, Address> */
     #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'customer', cascade: ['persist','remove'])]
+    #[Groups(['admin:cart'])]
     private Collection $addresses;
 
     /** @var Collection<int, Order> */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'customer', cascade: ['persist','remove'])]
     private Collection $orders;
 
-    /**
-     * @var Collection<int, Review>
-     */
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'customer', cascade: ['remove'], orphanRemoval: true)]
-    private Collection $reviews;
+    #[ORM\Column(type: 'text', nullable: false)]
+    #[Groups(['admin:cart'])]
+    private ?string $comment = null;
 
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
         $this->orders    = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
+        $this->comment = 'Новый заказ';
     }
 
     public function getId(): ?UuidInterface
@@ -134,31 +138,15 @@ class Customer
         return $this;
     }
 
-    /**
-     * @return Collection<int, Review>
-     */
-    public function getReviews(): Collection
+    public function getComment(): string
     {
-        return $this->reviews;
+        return $this->comment;
     }
 
-    public function addReview(Review $review): self
+    public function setComment(string $comment): self
     {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setCustomer($this);
-        }
+        $this->comment = $comment;
         return $this;
     }
 
-    public function removeReview(Review $review): self
-    {
-        if ($this->reviews->removeElement($review)) {
-            // разрываем связь, чтобы orphanRemoval сработал
-            if ($review->getCustomer() === $this) {
-                $review->setCustomer(null);
-            }
-        }
-        return $this;
-    }
 }

@@ -38,6 +38,7 @@ security:
         - { path: ^/api/doc(?:\.json|\.yaml)?$, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
+        - { path: ^/api/order/checkout$, roles: PUBLIC_ACCESS }
         - { path: ^/api/cart, roles: PUBLIC_ACCESS }
         - { path: ^/api/categories, roles: PUBLIC_ACCESS }
         - { path: ^/api/admin, roles: ROLE_ADMIN }

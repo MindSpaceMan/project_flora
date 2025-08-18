@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ваш заказ принят</title>
+</head>
+<body style="font-family: Arial, sans-serif; color:#222;">
+<h2>Спасибо за заказ!</h2>
+<p>Номер заказа: <strong>{{ order.id }}</strong></p>
+<p>Статус: <strong>{{ order.status }}</strong></p>
+
+<h3>Контактные данные</h3>
+<ul>
+    <li>Имя: {{ order.customerName }}</li>
+    <li>Email: {{ order.customerEmail }}</li>
+    <li>Телефон: {{ order.customerPhone }}</li>
+    <li>Адрес: {{ order.deliveryAddress }}</li>
+</ul>
+
+{% if order.items is defined %}
+    <h3>Состав заказа</h3>
+    <ul>
+        {% for item in order.items %}
+            <li>{{ item.productTitle ?? ('Товар #' ~ loop.index) }} × {{ item.quantity }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<p>Мы свяжемся с вами для подтверждения и уточнения деталей доставки.</p>
+</body>
+</html>

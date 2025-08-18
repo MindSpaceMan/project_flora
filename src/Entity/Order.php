@@ -15,7 +15,6 @@ use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 class Order
 {
     #[ORM\Id]
@@ -23,41 +22,37 @@ class Order
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'admin:cart'])]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['admin:cart'])]
     private Customer $customer;
 
     #[ORM\Column(length: 20, options: ['default' => 'cart'])]
-    #[Groups(['cart:read'])]
-    private string $status = 'cart'; // cart|paid|shipped|cancelled
-
-    #[ORM\Column(type: 'decimal', precision: 12, scale: 2)]
-    private string $totalAmount = '0.00';
-
-    #[ORM\Column(length: 3, options: ['default' => 'RUB'])]
-    private string $currency = 'RUB';
+    #[Groups(['cart:read', 'admin:cart'])]
+    private string $status = 'cart';
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['admin:cart'])]
     private \DateTimeImmutable $createdAt;
 
     /** @var Collection<int, OrderItem> */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order', cascade: ['persist','remove'], orphanRemoval: true)]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'admin:cart'])]
     private Collection $items;
+
+    #[ORM\Column(length: 128, unique: true, nullable: true)]
+    #[Groups(['cart:read', 'admin:cart'])]
+    private ?string $cartTokenHash = null;
+
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->items     = new ArrayCollection();
-    }
-
-    #[ORM\PreUpdate]
-    public function preUpdate(): void
-    {
-
+        // $status_example = cart|sent|cancelled|paid
     }
 
     public function getId(): ?UuidInterface
@@ -84,28 +79,6 @@ class Order
     public function setStatus(string $status): self
     {
         $this->status = $status;
-        return $this;
-    }
-
-    public function getTotalAmount(): string
-    {
-        return $this->totalAmount;
-    }
-
-    public function setTotalAmount(string $totalAmount): self
-    {
-        $this->totalAmount = $totalAmount;
-        return $this;
-    }
-
-    public function getCurrency(): string
-    {
-        return $this->currency;
-    }
-
-    public function setCurrency(string $currency): self
-    {
-        $this->currency = $currency;
         return $this;
     }
 
@@ -138,9 +111,6 @@ class Order
         }
         return $this;
     }
-    #[ORM\Column(length: 128, unique: true, nullable: true)]
-    private ?string $cartTokenHash = null;
-
     public function setCartTokenHash(?string $hash): self { $this->cartTokenHash = $hash; return $this; }
     public function getCartTokenHash(): ?string { return $this->cartTokenHash; }
 }

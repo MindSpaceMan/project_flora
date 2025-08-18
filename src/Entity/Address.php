@@ -6,6 +6,7 @@ use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 class Address
@@ -14,6 +15,7 @@ class Address
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(['admin:cart'])]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'addresses')]
@@ -21,22 +23,31 @@ class Address
     private Customer $customer;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['admin:cart'])]
     private ?string $line1 = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['admin:cart'])]
     private ?string $line2 = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['admin:cart'])]
     private string $city;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['admin:cart'])]
     private string $region;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['admin:cart'])]
     private string $zip;
 
-    #[ORM\Column(length: 100)]
-    private string $country;
+    public function __construct()
+    {
+        $this->city = 'Город';
+        $this->region = 'Регион';
+        $this->zip = 'Индекс';
+    }
 
     public function getId(): ?UuidInterface
     {
@@ -106,17 +117,6 @@ class Address
     public function setZip(string $zip): self
     {
         $this->zip = $zip;
-        return $this;
-    }
-
-    public function getCountry(): string
-    {
-        return $this->country;
-    }
-
-    public function setCountry(string $country): self
-    {
-        $this->country = $country;
         return $this;
     }
 }

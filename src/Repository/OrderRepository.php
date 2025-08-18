@@ -16,4 +16,16 @@ final class OrderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Order::class);
     }
+
+    public function findNewByCartToken(string $cartToken): ?Order
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.cartToken = :t')
+            ->andWhere('o.status = :st')
+            ->setParameter('t', $cartToken)
+            ->setParameter('st', 'new')
+            ->leftJoin('o.items', 'oi')->addSelect('oi')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
