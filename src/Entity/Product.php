@@ -19,7 +19,7 @@ class Product
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['product:list'])]
+    #[Groups(['cart:read','product:list'])]
     #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
     private ?UuidInterface $id = null;
 
@@ -28,25 +28,25 @@ class Product
     private Category $category;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:list'])]
+    #[Groups(['cart:read','product:list'])]
     #[Property(example: 'Тюльпан лилиецветный Балладе Дрим')]
     private string $titleRu;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:list'])]
+    #[Groups(['cart:read','product:list'])]
     #[Property(example: 'Ballade Tulip')]
     private ?string $latinName = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['product:list'])]
+    #[Groups(['cart:read','product:list'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(['product:list'])]
+    #[Groups(['cart:read','product:list'])]
     private ?int $heightCm = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['product:list'])]
+    #[Groups(['cart:read','product:list'])]
     private string $slug;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -70,7 +70,7 @@ class Product
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
-    #[Groups(['product:list'])]
+    #[Groups(['cart:read','product:list'])]
     private Collection $images;
 
     public function __construct()

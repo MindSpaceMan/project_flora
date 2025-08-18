@@ -9,8 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Customer;
 use App\Entity\OrderItem;
+use OpenApi\Attributes\Property;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -20,14 +22,17 @@ class Order
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
+    #[Groups(['cart:read'])]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: true)]
     private Customer $customer;
 
-    #[ORM\Column(length: 20, options: ['default' => 'new'])]
-    private string $status = 'new'; // new|paid|shipped|cancelled
+    #[ORM\Column(length: 20, options: ['default' => 'cart'])]
+    #[Groups(['cart:read'])]
+    private string $status = 'cart'; // cart|paid|shipped|cancelled
 
     #[ORM\Column(type: 'decimal', precision: 12, scale: 2)]
     private string $totalAmount = '0.00';
@@ -40,6 +45,7 @@ class Order
 
     /** @var Collection<int, OrderItem> */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order', cascade: ['persist','remove'], orphanRemoval: true)]
+    #[Groups(['cart:read'])]
     private Collection $items;
 
     public function __construct()
@@ -132,4 +138,9 @@ class Order
         }
         return $this;
     }
+    #[ORM\Column(length: 128, unique: true, nullable: true)]
+    private ?string $cartTokenHash = null;
+
+    public function setCartTokenHash(?string $hash): self { $this->cartTokenHash = $hash; return $this; }
+    public function getCartTokenHash(): ?string { return $this->cartTokenHash; }
 }

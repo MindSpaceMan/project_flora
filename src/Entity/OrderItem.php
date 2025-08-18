@@ -6,8 +6,10 @@ use App\Repository\OrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Order;
 use App\Entity\Product;
+use OpenApi\Attributes\Property;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderItemRepository::class)]
 class OrderItem
@@ -16,6 +18,8 @@ class OrderItem
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
+    #[Groups(['cart:read'])]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'items')]
@@ -24,6 +28,7 @@ class OrderItem
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['cart:read'])]
     private Product $product;
 
     #[ORM\Column(type: 'integer')]
