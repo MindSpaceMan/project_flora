@@ -45,7 +45,7 @@ final class CartController extends AbstractController
             $payload,
             200,
             [],
-            ['groups' => ['cart:read', 'product:list']]
+            ['groups' => ['cart:read']]
         );
     }
 
@@ -76,7 +76,7 @@ final class CartController extends AbstractController
             ['cart' => $order, 'cartToken' => $created ? $token : null],
             200,
             [],
-            ['groups' => ['cart:read', 'product:list']]
+            ['groups' => ['cart:read']]
         );
     }
 
@@ -101,7 +101,7 @@ final class CartController extends AbstractController
             ['cart' => $order],
             200,
             [],
-            ['groups' => ['cart:read', 'product:list']]
+            ['groups' => ['cart:read']]
         );
     }
 }

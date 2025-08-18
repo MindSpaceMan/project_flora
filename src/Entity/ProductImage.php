@@ -20,7 +20,7 @@ class ProductImage
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
-    #[Groups(['product:list'])]
+    #[Groups(['product:list', 'product:detail'])]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
@@ -31,7 +31,7 @@ class ProductImage
      * Источник хранения: external|local
      */
     #[ORM\Column(length: 20, options: ['default' => 'external'])]
-    #[Groups(['product:list'])]
+    #[Groups(['product:list', 'product:detail'])]
     private string $storage = 'external';
 
     /**
@@ -39,7 +39,7 @@ class ProductImage
      */
     #[ORM\Column(length: 1024, nullable: true)]
     #[Assert\Url(protocols: ['http', 'https'])]
-    #[Groups(['product:list'])]
+    #[Groups(['product:list', 'product:detail'])]
     private ?string $url = null;
 
     /**
@@ -47,19 +47,19 @@ class ProductImage
      * например: "products/ballade-dream/main.jpg"
      */
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:list'])]
+    #[Groups(['product:list', 'product:detail'])]
     private ?string $localPath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:list'])]
+    #[Groups(['product:list', 'product:detail'])]
     private ?string $alt = null;
 
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
-    #[Groups(['product:list'])]
+    #[Groups(['product:list', 'product:detail'])]
     private int $sortOrder = 0;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    #[Groups(['product:list'])]
+    #[Groups(['product:list', 'product:detail'])]
     private bool $isPrimary = false;
 
     #[ORM\Column(nullable: true)]

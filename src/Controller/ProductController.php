@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\ResponseDTO\ProductResponse;
 use App\Controller\ResponseDTO\ProductsResponse;
 use App\Service\ProductService;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -10,28 +11,34 @@ use OpenApi\Attributes as OA;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/product', name: 'product_map')]
 final class ProductController extends AbstractController
 {
     public function __construct(
         private readonly ProductService $productService,
     ) {}
 
-    #[Route('/categories/{id}/products', name: 'api_products_by_category', methods: ['GET'])]
-    #[ProductsResponse]
-    public function byCategory(string $id): JsonResponse
+    #[Route('/{id}', name: 'api_product_by_id', methods: ['GET'])]
+    #[ProductResponse]
+    public function byId(string $id): JsonResponse
     {
         Uuid::fromString($id);
 
-        $products = $this->productService->getByCategory($id);
+        $product = $this->productService->getById($id);
+
+        if (!$product) {
+            throw new NotFoundHttpException('Продукт не найден');
+        }
 
         return $this->json(
-            $products,
+            $product,
             200,
             [],
             [
-                'groups' => ['product:list'],
+                'groups' => ['product:detail'],
                 'json_encode_options' => \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES,
             ]
         );

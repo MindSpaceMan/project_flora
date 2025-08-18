@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -16,12 +17,24 @@ final readonly class ProductService
     /**
      * Возвращает продукты по UUID категории.
      *
-     * @return array<\App\Entity\Product>
+     * @return array<Product>
      */
     public function getByCategory(string $categoryId): array
     {
         $uuid = Uuid::fromString($categoryId);
 
         return $this->productRepository->findByCategoryId($uuid);
+    }
+
+    /**
+     * Возвращает продукт по UUID.
+     *
+     * @return array<Product>
+     */
+    public function getById(string $id): array
+    {
+        $uuid = Uuid::fromString($id);
+
+        return $this->productRepository->findById($uuid);
     }
 }

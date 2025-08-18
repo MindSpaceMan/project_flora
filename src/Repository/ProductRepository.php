@@ -34,4 +34,20 @@ final class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+    /**
+     * Возвращает продукт по UUID вместе с категорией и картинками.
+     */
+    public function findOneWithCategoryAndImages(UuidInterface $id): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')->addSelect('c')
+            ->leftJoin('p.images', 'i')->addSelect('i')
+            ->andWhere('p.id = :id')
+            // если маппинг поля — Doctrine "uuid", можно явно указать тип:
+            ->setParameter('id', $id, 'uuid')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

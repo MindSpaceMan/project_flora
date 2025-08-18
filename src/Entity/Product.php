@@ -19,40 +19,43 @@ class Product
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['cart:read','product:list'])]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
     #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['product:detail'])]
     private Category $category;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['cart:read','product:list'])]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
     #[Property(example: 'Тюльпан лилиецветный Балладе Дрим')]
     private string $titleRu;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['cart:read','product:list'])]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
     #[Property(example: 'Ballade Tulip')]
     private ?string $latinName = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['cart:read','product:list'])]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
     private ?string $description = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(['cart:read','product:list'])]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
     private ?int $heightCm = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['cart:read','product:list'])]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
     private string $slug;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:detail'])]
     private ?string $metaTitle = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['product:detail'])]
     private ?string $metaDescription = null;
 
     #[ORM\Column]
@@ -70,7 +73,8 @@ class Product
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
-    #[Groups(['cart:read','product:list'])]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
+    #[ORM\OrderBy(['sortOrder' => 'ASC', 'id' => 'ASC'])]
     private Collection $images;
 
     public function __construct()

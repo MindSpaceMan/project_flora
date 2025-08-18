@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
@@ -17,17 +18,17 @@ class Category
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(['category:list'])]
+    #[Groups(['category:list', 'product:detail'])]
     #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
     private ?UuidInterface $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['category:list'])]
+    #[Groups(['category:list', 'product:detail'])]
     #[Property(example: 'Тюльпаны')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Groups(['category:list'])]
+    #[Groups(['category:list', 'product:detail'])]
     #[Property(example: 'tyulpany')]
     private ?string $slug = null;
 
@@ -36,6 +37,14 @@ class Category
 
     #[ORM\Column]
     private ?bool $isActive = true;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['category:list', 'product:detail'])]
+    private ?string $metaTitle = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['category:list', 'product:detail'])]
+    private ?string $metaDescription = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -132,6 +141,30 @@ class Category
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getMetaTitle(): ?string
+    {
+        return $this->metaTitle;
+    }
+
+    public function setMetaTitle(?string $metaTitle): self
+    {
+        $this->metaTitle = $metaTitle;
+
+        return $this;
+    }
+
+    public function getMetaDescription(): ?string
+    {
+        return $this->metaDescription;
+    }
+
+    public function setMetaDescription(?string $metaDescription): self
+    {
+        $this->metaDescription = $metaDescription;
 
         return $this;
     }
