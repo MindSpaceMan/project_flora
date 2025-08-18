@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\ResponseDTO;
 
-use App\Entity\Category;
-use App\Entity\Order;
 use Attribute;
 use OpenApi\Attributes as OA;
 use Nelmio\ApiDocBundle\Attribute\Model;
@@ -20,6 +18,7 @@ final class CheckoutResponse extends OA\Post
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(
+                    required: ['fullName','phone','email','deliveryAddress','pdnConsent'],
                     properties: [
                         new OA\Property(property: 'fullName', type: 'string', example: 'Иван Петров'),
                         new OA\Property(property: 'phone', type: 'string', example: '+7 (900) 123-45-67'),

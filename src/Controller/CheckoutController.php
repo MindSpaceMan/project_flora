@@ -6,12 +6,11 @@ namespace App\Controller;
 use App\Controller\ResponseDTO\CheckoutResponse;
 use App\Dto\CheckoutRequest;
 use App\Service\CheckoutService;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/order')]
@@ -23,7 +22,7 @@ final class CheckoutController extends AbstractController
 
     #[Route('/checkout', name: 'api_order_checkout', methods: ['POST'])]
     #[CheckoutResponse]
-    public function checkout(Request $request): JsonResponse
+    public function checkout(#[MapRequestPayload] CheckoutRequest $dto, Request $request): JsonResponse
     {
         $cartToken = $request->headers->get('X-Cart-Token');
         if (!$cartToken) {
@@ -35,15 +34,6 @@ final class CheckoutController extends AbstractController
         } catch (\Throwable $e) {
             throw new JsonException('Некорректный JSON body');
         }
-
-        $dto = new CheckoutRequest();
-        $dto->fullName        = (string)($payload['fullName'] ?? '');
-        $dto->phone           = (string)($payload['phone'] ?? '');
-        $dto->email           = (string)($payload['email'] ?? '');
-        $dto->deliveryAddress = (string)($payload['deliveryAddress'] ?? '');
-        $dto->comment         = isset($payload['comment']) ? (string)$payload['comment'] : null;
-        $dto->pdnConsent      = (bool)($payload['pdnConsent'] ?? false);
-        $dto->newsletterOptIn = (bool)($payload['newsletterOptIn'] ?? false);
 
         $order = $this->service->checkout($cartToken, $dto);
 

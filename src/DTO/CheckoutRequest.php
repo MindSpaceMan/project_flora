@@ -12,6 +12,10 @@ final class CheckoutRequest
     public string $fullName;
 
     #[Assert\NotBlank(message: 'Укажите телефон')]
+    #[Assert\Regex(
+        pattern: '^\+7\d{10}$',
+        message: 'Укажите телефон в формате +7 (XXX) XXX-XX-XX или 8 XXX XXX-XX-XX'
+    )]
     #[Assert\Length(max: 50)]
     public string $phone;
 
