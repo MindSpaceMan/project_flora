@@ -1,6 +1,14 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - mail
+    handlers:
+        mail:
+            type: rotating_file
+            path: '%kernel.logs_dir%/mail.log'
+            max_files: 42
+            level: info
+            formatter: monolog.formatter.json
 
 when@dev:
     monolog:

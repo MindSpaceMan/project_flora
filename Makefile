@@ -10,7 +10,7 @@ DC_EXEC = ${DC} exec sio_test
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-init: down build install up migrate fixtures success-message console ## Initialize environment
+init: down-cute build install up migrate consume success-message console ## Initialize environment
 
 build: ## Build services.
 	${DC} build $(c)
@@ -23,6 +23,9 @@ stop: ## Stop services.
 
 start: ## Start services.
 	${DC} start $(c)
+
+down-cute: ## Stop and remove containers and volumes.
+	${DC} down $(c)
 
 down: ## Stop and remove containers and volumes.
 	${DC} down -v $(c)
@@ -40,6 +43,12 @@ migrate: ## Run migrations
 
 fixtures: ## Load fixtures
 	${DC_RUN} wait-for.sh database 5432 -- php bin/console doctrine:fixtures:load --no-interaction
+
+consume:
+	${DC} run -d --rm sio_test \
+    		wait-for.sh database 5432 -- \
+    		php bin/console messenger:consume async \
+    		  --time-limit=3600 --memory-limit=256M --sleep=1 -vv
 
 test: ## Run tests
 	${DC_RUN} wait-for.sh database 5432 -- php bin/phpunit

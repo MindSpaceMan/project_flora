@@ -164,7 +164,6 @@ final class FlowerTestFixtures extends Fixture
         }
 
         $em->flush();
-        echo "[ProductFixtures] Созданы продукты для категорий tyulpany/eustomy.\n";
     }
 
     /**

@@ -15,22 +15,6 @@ final class CheckoutResponse extends OA\Post
         parent::__construct(
             path: '/api/order/checkout',
             summary: 'Оформление заказа (анонимно) по X-Cart-Token',
-            requestBody: new OA\RequestBody(
-                required: true,
-                content: new OA\JsonContent(
-                    required: ['fullName','phone','email','deliveryAddress','pdnConsent'],
-                    properties: [
-                        new OA\Property(property: 'fullName', type: 'string', example: 'Иван Петров'),
-                        new OA\Property(property: 'phone', type: 'string', example: '+7 (900) 123-45-67'),
-                        new OA\Property(property: 'email', type: 'string', example: 'ivan@example.com'),
-                        new OA\Property(property: 'deliveryAddress', type: 'string', example: 'г. Москва, ул. Цветочная, д. 5'),
-                        new OA\Property(property: 'comment', type: 'string', example: 'Позвонить за час до доставки', nullable: true),
-                        new OA\Property(property: 'pdnConsent', type: 'boolean', example: true),
-                        new OA\Property(property: 'newsletterOptIn', type: 'boolean', example: false),
-                    ],
-                    type: 'object'
-                )
-            ),
             tags: ['Order'],
             parameters: [
                 new OA\Parameter(

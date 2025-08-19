@@ -4,14 +4,17 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\ResponseDTO\AddItemResponse;
+use App\Controller\ResponseDTO\CreateCartResponse;
 use App\Controller\ResponseDTO\GetCartResponse;
 use App\Controller\ResponseDTO\RemoveItemResponse;
+use App\Entity\Order;
 use App\Security\CartTokenResolver;
 use App\Service\CartService;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/cart', name: 'public_cart')]
@@ -27,22 +30,34 @@ final class CartController extends AbstractController
     /**
      * @throws RandomException
      */
-    #[Route('/{id}/cart', name: 'get', methods: ['GET'])]
+    #[Route('', name: 'create', methods: ['POST'])]
+    #[CreateCartResponse]
+    public function createCart(): JsonResponse
+    {
+        return $this->json(
+            $this->cartService->createCart(),
+            200,
+            [],
+            ['groups' => ['cart:read']]
+        );
+
+    }
+
+    /**
+     */
+    #[Route('/{id}', name: 'get', methods: ['GET'])]
     #[GetCartResponse]
     public function getCart(Request $request): JsonResponse
     {
         $raw = $this->tokenResolver->resolveRawToken($request);
         $created = false;
-        [$order, $rawToken] = $this->cartService->getOrCreateCartByToken($raw, $created);
-
-        // При первом создании вернём токен, чтобы фронт его сохранил
-        $payload = [
-            'cart' => $order,
-            'cartToken' => $created ? $rawToken : null,
-        ];
+        $order = $this->cartService->getCartByToken($raw, $created);
 
         return $this->json(
-            $payload,
+            [
+                'cart' => $order,
+                'cartToken' => $raw
+            ],
             200,
             [],
             ['groups' => ['cart:read']]
@@ -50,16 +65,16 @@ final class CartController extends AbstractController
     }
 
     /**
-     * @throws RandomException
      */
     #[Route('/items', name: 'add_item', methods: ['POST'])]
     #[AddItemResponse]
-    public function addItem(Request $request): JsonResponse
+    public function addItem(
+        #[MapQueryParameter] string $productId,
+        Request                     $request,
+        #[MapQueryParameter] int    $quantity = 1,
+    ): JsonResponse
     {
-        $raw = $this->tokenResolver->resolveRawToken($request);
-        $data = json_decode((string)$request->getContent(), true) ?? [];
-        $productId = $data['productId'] ?? null;
-        $quantity = (int)($data['quantity'] ?? 1);
+        $token = $this->tokenResolver->resolveRawToken($request);
         if (!$productId) {
             return $this->json(['error' => 'productId is обязателен'], 400);
         }
@@ -67,13 +82,12 @@ final class CartController extends AbstractController
             return $this->json(['error' => 'quantity must лучше >= 1'], 400);
         }
 
-        // Если токена не было — создадим новый и вернём его
-        $created = false;
-        [$order, $token] = $this->cartService->getOrCreateCartByToken($raw, $created);
-        $order = $this->cartService->addItem($order->getId()->toString(), $productId, $quantity);
 
         return $this->json(
-            ['cart' => $order, 'cartToken' => $created ? $token : null],
+            [
+                'cart' => $this->cartService->addItemByToken($token, $productId, $quantity),
+                'cartToken' => $token
+            ],
             200,
             [],
             ['groups' => ['cart:read']]
@@ -81,24 +95,28 @@ final class CartController extends AbstractController
     }
 
     /**
-     * @throws RandomException
      */
-    #[Route('/items/{itemId}', name: 'remove_item', methods: ['DELETE'])]
+    #[Route('/items', name: 'remove_item', methods: ['DELETE'])]
     #[RemoveItemResponse]
-    public function removeItem(string $itemId, Request $request): JsonResponse
+    public function removeItem(
+        #[MapQueryParameter] string $productId,
+        Request                     $request,
+        #[MapQueryParameter] int    $quantity = 1,
+    ): JsonResponse
     {
-        $raw = $this->tokenResolver->resolveRawToken($request);
-        $created = false;
-        [$order] = $this->cartService->getOrCreateCartByToken($raw, $created);
-        if ($created) {
-            // У пользователя не было корзины — нечего удалять
-            return $this->json(['cart' => $order], 200, [], ['groups' => ['cart:read', 'product:list']]);
+        $token = $this->tokenResolver->resolveRawToken($request);
+        if (!$productId) {
+            return $this->json(['error' => 'productId is обязателен'], 400);
+        }
+        if ($quantity < 1) {
+            return $this->json(['error' => 'quantity must лучше >= 1'], 400);
         }
 
-        $order = $this->cartService->removeItem($order->getId()->toString(), $itemId);
-
         return $this->json(
-            ['cart' => $order],
+            [
+                'cart' => $this->cartService->removeItemByToken($token, $productId, $quantity),
+                'cartToken' => $token
+            ],
             200,
             [],
             ['groups' => ['cart:read']]

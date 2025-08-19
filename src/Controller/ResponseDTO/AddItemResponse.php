@@ -15,7 +15,7 @@ final class AddItemResponse extends OA\Post
     public function __construct()
     {
         parent::__construct(
-            summary: 'Категории цветочков',
+            summary: 'Добавить продукт в корзину',
             tags: ['Cart'],
             parameters: [
                 new OA\Parameter(
@@ -32,11 +32,18 @@ final class AddItemResponse extends OA\Post
                     schema: new OA\Schema(type: 'integer'),
                     example: 2
                 ),
+                new OA\Parameter(
+                    name: 'X-Cart-Token',
+                    description: 'Токен корзины, выданный на этапе добавления в корзину',
+                    in: 'header',
+                    required: true,
+                    schema: new OA\Schema(type: 'string', example: 'c9d8f0f0-bf0a-4a09-9a52-4d52a6f1b3a1')
+                ),
             ],
             responses: [
                 new OA\Response(
                     response: 200,
-                    description: 'Корзина после добавления позиции',
+                    description: 'Корзина после добавления',
                     content: new OA\JsonContent(ref: new Model(type: Order::class, groups: ['cart:read']))
                 ),
                 new OA\Response(response: 401, description: 'Не авторизован'),

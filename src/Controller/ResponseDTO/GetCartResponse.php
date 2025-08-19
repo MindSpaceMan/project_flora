@@ -17,6 +17,15 @@ final class GetCartResponse extends OA\Get
         parent::__construct(
             summary: 'Корзина товаров',
             tags: ['Cart'],
+            parameters: [
+                new OA\Parameter(
+                    name: 'X-Cart-Token',
+                    description: 'Токен корзины, выданный на этапе добавления в корзину',
+                    in: 'header',
+                    required: true,
+                    schema: new OA\Schema(type: 'string', example: 'c9d8f0f0-bf0a-4a09-9a52-4d52a6f1b3a1')
+                ),
+            ],
             responses: [
                 new OA\Response(
                     response: 200,

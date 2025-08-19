@@ -148,8 +148,6 @@ final class FlowerTestImageFixtures extends Fixture
         }
 
         $manager->flush();
-
-        $io->success(sprintf('Готово. Добавлено изображений: %d', $added));
     }
 
     public function getDependencies(): array

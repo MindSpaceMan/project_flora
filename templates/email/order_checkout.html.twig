@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Ваш заказ принят</title>
 </head>
 <body style="font-family: Arial, sans-serif; color:#222;">
@@ -11,17 +11,17 @@
 
 <h3>Контактные данные</h3>
 <ul>
-    <li>Имя: {{ order.customerName }}</li>
-    <li>Email: {{ order.customerEmail }}</li>
-    <li>Телефон: {{ order.customerPhone }}</li>
-    <li>Адрес: {{ order.deliveryAddress }}</li>
+    <li>Имя: {{ customer.name }}</li>
+    <li>Email: {{ customer.email }}</li>
+    <li>Телефон: {{ customer.phone }}</li>
+    <li>Адрес: {{ address.region }}, {{ address.city }}, {{ address.line1 }}, {{ address.zip }}</li>
 </ul>
 
 {% if order.items is defined %}
     <h3>Состав заказа</h3>
     <ul>
         {% for item in order.items %}
-            <li>{{ item.productTitle ?? ('Товар #' ~ loop.index) }} × {{ item.quantity }}</li>
+            <td>Товар {{ item.product.titleRu }}, {{ item.product.latinName }} × {{ item.quantity }}</td>
         {% endfor %}
     </ul>
 {% endif %}

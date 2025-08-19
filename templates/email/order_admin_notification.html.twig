@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Новый заказ №{{ order.id }}</title>
 </head>
 <body style="font-family: Arial, sans-serif; color:#222;">
@@ -10,16 +10,15 @@
 
 <h3>Контакты клиента</h3>
 <ul>
-    <li>Имя: {{ fullName ?: '—' }}</li>
-    <li>Email: {{ email ?: '—' }}</li>
-    <li>Телефон: {{ phone ?: '—' }}</li>
+    <li>Имя: {{ customer.name ?: '—' }}</li>
+    <li>Email: {{ customer.email ?: '—' }}</li>
+    <li>Телефон: {{ customer.phone ?: '—' }}</li>
 </ul>
 
 <h3>Доставка</h3>
 <ul>
-    <li>Адрес: {{ address ?: '—' }}</li>
-    <li>Комментарий: {{ comment ?: '—' }}</li>
-    <li>Согласие на рассылку: {{ newsletter ? 'Да' : 'Нет' }}</li>
+    <li>Адрес: {{ address.region }}, {{ address.city }}, {{ address.line1 }}, {{ address.zip }}</li>
+    <li>Комментарий: {{ customer.comment ?: '—' }}</li>
 </ul>
 
 {% if order.items is defined and order.items|length > 0 %}
@@ -29,6 +28,7 @@
         <tr>
             <th align="left">#</th>
             <th align="left">Товар</th>
+            <th align="left">Описание</th>
             <th align="left">Кол-во</th>
         </tr>
         </thead>
@@ -36,7 +36,8 @@
         {% for item in order.items %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ item.productTitle ?? ('Товар #' ~ loop.index) }}</td>
+                <td>Товар {{ item.product.titleRu }}, Идентификатор: {{ item.product.id }}}</td>
+                <td>{{ item.product.latinName }} - {{ item.product.description }}</td>
                 <td>{{ item.quantity }}</td>
             </tr>
         {% endfor %}

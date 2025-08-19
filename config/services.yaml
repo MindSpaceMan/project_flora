@@ -29,3 +29,8 @@ services:
             $orderNotifyEmail: '%app.order_notify_email%'
             $mailerFrom: '%app.mailer_from%'
             $mailerFromName: '%app.mailer_from_name%'
+
+    App\Service\ContactMailService:
+        arguments:
+            $orderNotifyEmail: '%app.order_notify_email%'
+            $mailerFromName: '%app.mailer_from_name%'

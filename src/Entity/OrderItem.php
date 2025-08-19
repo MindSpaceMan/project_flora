@@ -24,7 +24,7 @@ class OrderItem
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'items')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
-    private Order $order;
+    private ?Order $order = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -32,17 +32,14 @@ class OrderItem
     private Product $product;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['cart:read'])]
     private int $quantity;
-
-    #[ORM\Column(type: 'decimal', precision: 12, scale: 2)]
-    private string $unitPrice;
-
     public function getId(): ?UuidInterface
     {
         return $this->id;
     }
 
-    public function getOrder(): Order
+    public function getOrder(): ?Order
     {
         return $this->order;
     }
@@ -72,17 +69,6 @@ class OrderItem
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
-        return $this;
-    }
-
-    public function getUnitPrice(): string
-    {
-        return $this->unitPrice;
-    }
-
-    public function setUnitPrice(string $unitPrice): self
-    {
-        $this->unitPrice = $unitPrice;
         return $this;
     }
 }

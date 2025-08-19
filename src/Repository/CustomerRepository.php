@@ -16,4 +16,15 @@ final class CustomerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Customer::class);
     }
+
+    public function getCustomerByEmailOrPhone(string $email, string $phone): ?Customer
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.email = :email')
+            ->orWhere('c.phone = :phone')
+            ->setParameter('email', $email)
+            ->setParameter('phone', $phone)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
