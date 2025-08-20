@@ -53,7 +53,7 @@ class Order
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->items     = new ArrayCollection();
-        // $status_example = cart|sent|cancelled|paid
+        // $status_example = cart|sent|cancelled|paid|shipped
     }
 
     public function getId(): ?UuidInterface

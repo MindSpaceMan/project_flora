@@ -22,11 +22,11 @@ class Address
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private Customer $customer;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     #[Groups(['admin:cart'])]
     private ?string $line1 = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     #[Groups(['admin:cart'])]
     private ?string $line2 = null;
 
@@ -38,7 +38,7 @@ class Address
     #[Groups(['admin:cart'])]
     private string $region;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20, unique: true, )]
     #[Groups(['admin:cart'])]
     private string $zip;
 

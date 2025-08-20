@@ -142,7 +142,6 @@ final class FlowerTestImageFixtures extends Fixture
                     ->setIsPrimary((bool)($img['primary'] ?? ($order === 0)));
 
                 $manager->persist($image);
-                $added++;
                 $order++;
             }
         }

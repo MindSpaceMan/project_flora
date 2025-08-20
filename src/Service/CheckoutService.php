@@ -6,6 +6,7 @@ namespace App\Service;
 use App\DTO\CheckoutRequest;
 use App\Entity\Customer;
 use App\Entity\Order;
+use App\Repository\AddressRepository;
 use App\Repository\CustomerRepository;
 use App\Repository\OrderRepository;
 use App\Security\CartTokenResolver;
@@ -29,7 +30,7 @@ final readonly class CheckoutService
         private MailerInterface        $mailer,
         private string                 $orderNotifyEmail,
         private string                 $mailerFrom,
-        private string                 $mailerFromName,
+        private string                 $mailerFromName, private AddressRepository $addressRepository,
         private ?LoggerInterface       $logger = null,
     )
     {
@@ -56,11 +57,16 @@ final readonly class CheckoutService
             $this->em->persist($customer);
             $this->em->flush();
         }
-        $address = new \App\Entity\Address();
-        $address->setLine1($dto->deliveryAddress);
-        $address->setCity($dto->city);
-        $address->setRegion($dto->region);
-        $address->setZip($dto->zip);
+
+        $address = $this->addressRepository->getAddressByLine1($dto->deliveryAddress);
+        if (!$address) {
+            $address = new \App\Entity\Address();
+            $address->setLine1($dto->deliveryAddress);
+            $address->setCity($dto->city);
+            $address->setRegion($dto->region);
+            $address->setZip($dto->zip);
+        }
+
         $this->em->persist($address);
         $this->em->flush();
 

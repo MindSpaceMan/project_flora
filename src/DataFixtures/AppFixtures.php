@@ -20,18 +20,19 @@ class AppFixtures extends Fixture
     {
 
         $rows = [
-            ['name' => 'Тюльпаны',   'slug' => 'tyulpany',   'isActive' => true],
-            ['name' => 'Эустомы',    'slug' => 'eustomy',    'isActive' => true],
-            ['name' => 'Розы',       'slug' => 'rozy',       'isActive' => false],
-            ['name' => 'Орхидеи',    'slug' => 'orkhidei',   'isActive' => false],
-            ['name' => 'Хризантемы', 'slug' => 'khrizantemy','isActive' => false],
+            ['name' => 'Тюльпаны',   'slug' => 'tyulpany',   'isActive' => true, 'imagePath' => '/assets/tulip.jpg'],
+            ['name' => 'Эустомы',    'slug' => 'eustomy',    'isActive' => true, 'imagePath' => '/assets/eustoma.jpg'],
+            ['name' => 'Розы',       'slug' => 'rozy',       'isActive' => false, 'imagePath' => '/assets/rose_popular.jpg'],
+            ['name' => 'Орхидеи',    'slug' => 'orkhidei',   'isActive' => false, 'imagePath' => '/assets/orchideas.jpg'],
+            ['name' => 'Хризантемы', 'slug' => 'khrizantemy','isActive' => false, 'imagePath' => '/assets/chrysanthemum.jpg'],
         ];
 
         foreach ($rows as $row) {
             $c = (new Category())
                 ->setName($row['name'])
                 ->setSlug($row['slug'])
-                ->setIsActive($row['isActive']); // sortOrder/createdAt/updatedAt не трогаем
+                ->setIsActive($row['isActive']) // sortOrder/createdAt/updatedAt не трогаем
+                ->setImagePath($row['imagePath']); // sortOrder/createdAt/updatedAt не трогаем
             $manager->persist($c);
         }
 

@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Controller\ResponseDTO\AddItemResponse;
 use App\Controller\ResponseDTO\CreateCartResponse;
 use App\Controller\ResponseDTO\GetCartResponse;
+use App\Controller\ResponseDTO\OrderColResponse;
 use App\Controller\ResponseDTO\RemoveItemResponse;
 use App\Entity\Order;
 use App\Security\CartTokenResolver;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cart', name: 'public_cart')]
 final class CartController extends AbstractController
@@ -45,13 +47,12 @@ final class CartController extends AbstractController
 
     /**
      */
-    #[Route('/{id}', name: 'get', methods: ['GET'])]
+    #[Route('/{id}/single', name: 'single', methods: ['GET'])]
     #[GetCartResponse]
     public function getCart(Request $request): JsonResponse
     {
         $raw = $this->tokenResolver->resolveRawToken($request);
-        $created = false;
-        $order = $this->cartService->getCartByToken($raw, $created);
+        $order = $this->cartService->getCartByToken($raw);
 
         return $this->json(
             [
@@ -120,6 +121,23 @@ final class CartController extends AbstractController
             200,
             [],
             ['groups' => ['cart:read']]
+        );
+    }
+
+//    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+//    #[IsGranted('ROLE_ADMIN')]
+    #[Route('', name: 'get_all', methods: ['GET'])]
+    #[OrderColResponse]
+    public function getAll(): JsonResponse
+    {
+
+        $orders = $this->cartService->getAll();
+
+        return $this->json(
+            $orders,
+            200,
+            [],
+            ['groups' => ['admin:cart','product:detail' ]]
         );
     }
 }

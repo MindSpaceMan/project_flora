@@ -26,7 +26,7 @@ final readonly class CategoryService
     public function getActiveCategories(): array
     {
         return $this->repository->createQueryBuilder('c')
-            ->select('c.id, c.name, c.slug') // только нужные поля
+            ->select('c.id, c.name, c.slug, c.imagePath') // только нужные поля
             ->andWhere('c.isActive = :active')
             ->setParameter('active', true)
             ->addOrderBy('c.sortOrder', 'ASC')

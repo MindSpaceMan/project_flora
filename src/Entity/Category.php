@@ -32,6 +32,11 @@ class Category
     #[Property(example: 'tyulpany')]
     private ?string $slug = null;
 
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    #[Groups(['category:list', 'product:detail'])]
+    #[Property(example: '/assets/tulip.jpg')]
+    private ?string $imagePath = null;
+
     #[ORM\Column]
     private int $sortOrder = 0;
 
@@ -165,6 +170,18 @@ class Category
     public function setMetaDescription(?string $metaDescription): self
     {
         $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->imagePath;
+    }
+
+    public function setImagePath(?string $imagePath): self
+    {
+        $this->imagePath = $imagePath;
 
         return $this;
     }

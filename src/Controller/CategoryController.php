@@ -14,12 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/category', name: 'category_map')]
+#[Route('/category', name: 'category_')]
 final class CategoryController extends AbstractController
 {
     public function __construct(
         private readonly CategoryService $categoryService,
-        private readonly ProductService  $productService,
     )
     {
     }

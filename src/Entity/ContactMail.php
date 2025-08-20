@@ -22,18 +22,22 @@ class ContactMail
 
     #[ORM\Column(length: 255)]
     #[Groups(['mail:read'])]
+    #[Property(example: 'Mare')]
     private ?string $name = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['mail:read'])]
+    #[Property(example: 'Mare@example.com')]
     private ?string $contact = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['mail:read'])]
+    #[Property(example: 'Mare y')]
     private ?string $message = null;
 
     #[ORM\Column]
     #[Groups(['mail:read'])]
+    #[Property(example: '2025-08-19T20:01:17+00:00')]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()

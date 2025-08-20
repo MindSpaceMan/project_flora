@@ -129,4 +129,13 @@ final readonly class CartService
             'cart' => $cart,
         ];
     }
+
+    public function getAll(): array
+    {
+        return $this->orderRepository->findBy(
+            [
+                'status' => 'sent'
+            ]
+        );
+    }
 }

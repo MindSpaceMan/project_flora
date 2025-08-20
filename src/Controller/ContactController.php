@@ -44,6 +44,8 @@ final class ContactController extends AbstractController
         );
     }
 
+    //    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+//    #[IsGranted('ROLE_ADMIN')]
     #[Route('', name: 'api_contact_mail', methods: ['GET'])]
     #[ContactMailsResponse]
     public function get(): JsonResponse
@@ -53,7 +55,7 @@ final class ContactController extends AbstractController
             200,
             [],
             [
-                'groups' => ['contact:read'],
+                'groups' => ['mail:read'],
                 'json_encode_options' => JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
             ]
         );

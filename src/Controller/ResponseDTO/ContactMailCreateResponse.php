@@ -17,7 +17,7 @@ final class ContactMailCreateResponse extends OA\Post
     {
         parent::__construct(
             summary: 'Отправка письма на почту',
-            tags: ['Mail'],
+            tags: ['Client'],
             responses: [
                 new OA\Response(
                     response: 200,

@@ -29,12 +29,17 @@ final readonly class ProductService
     /**
      * Возвращает продукт по UUID.
      *
-     * @return array<Product>
+     * @param string $id
+     * @return Product|null
      */
-    public function getById(string $id): array
+    public function getById(string $id): ?Product
     {
-        $uuid = Uuid::fromString($id);
 
-        return $this->productRepository->findById($uuid);
+        return $this->productRepository->find($id);
+    }
+
+    public function getAll(): array
+    {
+        return $this->productRepository->findAll();
     }
 }

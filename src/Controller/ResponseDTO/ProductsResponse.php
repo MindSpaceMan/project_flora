@@ -16,7 +16,7 @@ final class ProductsResponse extends OA\Get
     {
         parent::__construct(
             summary: 'Категория со списком продуктов',
-            tags: ['Category'],
+            tags: ['Client'],
             parameters: [
                 new OA\Parameter(
                     name: 'id',

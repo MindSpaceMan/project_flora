@@ -46,7 +46,7 @@ final readonly class ContactMailService
             $adminEmail = (new TemplatedEmail())
                 ->from(new Address($contactMail->getContact(), $contactMail->getName()))
                 ->to(new Address($this->orderNotifyEmail, $this->mailerFromName))
-                ->subject(sprintf('Новое сообщение от пользователя'))
+                ->subject('Новое сообщение от пользователя')
                 ->htmlTemplate('email/contact_mail.html.twig')
                 ->context([
                     'mail' => $contactMail,

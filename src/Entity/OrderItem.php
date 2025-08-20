@@ -19,7 +19,7 @@ class OrderItem
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[Property(type: 'string', example: '15e7d25b-87db-4dad-b3ba-fc71f7d4effa')]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'product:detail'])]
     private ?UuidInterface $id = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'items')]
@@ -28,11 +28,11 @@ class OrderItem
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'product:detail'])]
     private Product $product;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'product:detail'])]
     private int $quantity;
     public function getId(): ?UuidInterface
     {

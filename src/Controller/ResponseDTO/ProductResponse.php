@@ -16,7 +16,7 @@ final class ProductResponse extends OA\Get
     {
         parent::__construct(
             summary: 'Продукт по айди',
-            tags: ['Product'],
+            tags: ['Client'],
             parameters: [
                 new OA\Parameter(
                     name: 'id',

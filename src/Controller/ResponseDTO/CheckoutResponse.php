@@ -15,7 +15,7 @@ final class CheckoutResponse extends OA\Post
         parent::__construct(
             path: '/api/order/checkout',
             summary: 'Оформление заказа (анонимно) по X-Cart-Token',
-            tags: ['Order'],
+            tags: ['Cart'],
             parameters: [
                 new OA\Parameter(
                     name: 'X-Cart-Token',

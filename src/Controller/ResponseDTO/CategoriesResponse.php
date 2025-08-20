@@ -15,7 +15,7 @@ final class CategoriesResponse extends OA\Get
     {
         parent::__construct(
             summary: 'Категории цветочков',
-            tags: ['Category'],
+            tags: ['Client'],
             responses: [
                 new OA\Response(
                     response: 200,

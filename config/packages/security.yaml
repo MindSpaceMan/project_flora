@@ -40,8 +40,9 @@ security:
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/order/checkout$, roles: PUBLIC_ACCESS }
         - { path: ^/api/cart, roles: PUBLIC_ACCESS }
-        - { path: ^/api/categories, roles: PUBLIC_ACCESS }
-        - { path: ^/api/contact, roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/category, roles: PUBLIC_ACCESS }
+        - { path: ^/api/contact, roles: PUBLIC_ACCESS }
+        - { path: ^/api/product, roles: PUBLIC_ACCESS }
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 

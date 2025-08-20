@@ -42,6 +42,10 @@ class Product
     #[Groups(['cart:read','product:list', 'product:detail'])]
     private ?string $description = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['cart:read','product:list', 'product:detail'])]
+    private ?string $careMessage = null;
+
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['cart:read','product:list', 'product:detail'])]
     private ?int $heightCm = null;
@@ -245,6 +249,18 @@ class Product
                 $image->setProduct(null);
             }
         }
+        return $this;
+    }
+
+    public function getCareMessage(): ?string
+    {
+        return $this->careMessage;
+    }
+
+    public function setCareMessage(?string $careMessage): self
+    {
+        $this->careMessage = $careMessage;
+
         return $this;
     }
 }
